@@ -9,7 +9,6 @@ C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Priv
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Private_Note.pdb
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Private_Note.Views.dll
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Private_Note.Views.pdb
-C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.csprojAssemblyReference.cache
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.AssemblyInfoInputs.cache
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.AssemblyInfo.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.RazorAssemblyInfo.cache
@@ -169,3 +168,5 @@ C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razo
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ViewStart.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LoginPartial.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_AuthLayout.cshtml.g.cs
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.csprojAssemblyReference.cache
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Views\UserHome\Index.cshtml.g.cs

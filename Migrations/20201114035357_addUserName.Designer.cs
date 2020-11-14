@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Private_Note.Data;
 
 namespace Private_Note.Migrations
 {
     [DbContext(typeof(PrivateNoteDBContext))]
-    partial class PrivateNoteDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201114035357_addUserName")]
+    partial class addUserName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,6 +172,10 @@ namespace Private_Note.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
@@ -191,7 +197,7 @@ namespace Private_Note.Migrations
                         .HasMaxLength(256);
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("nvarchar(30)")
                         .HasMaxLength(30);
 
                     b.Property<string>("PasswordHash")
@@ -204,7 +210,7 @@ namespace Private_Note.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecretPassword")
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("nvarchar(16)")
                         .HasMaxLength(16);
 
                     b.Property<string>("SecurityStamp")
@@ -228,25 +234,6 @@ namespace Private_Note.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("Private_Note.Models.Files", b =>
-                {
-                    b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FileType")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<byte[]>("File")
-                        .HasColumnType("varbinary(900)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("FileName", "FileType", "File", "CreatedDate");
-
-                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

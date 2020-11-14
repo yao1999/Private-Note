@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+@model IEnumerable<Private_Note.Models.Files>
+<div class="container p-3">
+    <div class="col-md-5">
+        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileUpload">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <p>Upload file</p>
+                    <input class="form-control" name="files" type="file" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input class="btn btn-success" type="submit" value="Upload" />
+                </div>
+            </div>
+        </form>
+        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDownload">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <p>Download file</p>
+
+                    <input name="name" type="text" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input class="btn btn-success" type="submit" value="Download" />
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="col-6">
+        <h2 class="text-primary">All Files</h2>
+    </div>
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-bordered table-striped" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>
+                        File Name
+                    </th>
+                    <th>
+                        File Type
+                    </th>
+                    <th>
+                        CreatedDate
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td width="50%">@obj.FileName</td>
+                        <td width="30%">@obj.FileType</td>
+                        <td width="40%">@obj.CreatedDate</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No User exist</p>
+    }
+</div> 

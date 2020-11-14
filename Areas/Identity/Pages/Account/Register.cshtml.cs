@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Private_Note.Areas.Identity.Data;
+using Private_Note.EncryptAndDecrypt;
 
 namespace Private_Note.Areas.Identity.Pages.Account
 {
@@ -47,12 +48,17 @@ namespace Private_Note.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "User Name")]
+            public string UserName { get; set; }
+
+            [Required]
             [EmailAddress]
-            [Display(Name = "Email")]
+            [Display(Name = "Email Address")]
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(30, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -61,10 +67,25 @@ namespace Private_Note.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [StringLength(16, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Secret Password")]
+            public string SecretPassword { get; set; }
+
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm Secret Password")]
+            [Compare("SecretPassword", ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmSecretPassword { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                Response.Redirect("/UserHome");
+            }
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -75,7 +96,14 @@ namespace Private_Note.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser {
+                    UserName = Input.UserName,
+                    Email = Input.Email,
+                    Password = Input.Password,
+                    SecretPassword = Methods.Encrypt(Input.SecretPassword),
+                    IsUser = true,
+                    AccessFailedCount = 0
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -109,7 +137,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-            return Page();
+            return RedirectToAction("Index", "UserHome");
         }
     }
 }

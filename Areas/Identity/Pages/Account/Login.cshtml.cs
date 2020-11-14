@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Private_Note.Areas.Identity.Data;
+using Private_Note.EncryptAndDecrypt;
 
 namespace Private_Note.Areas.Identity.Pages.Account
 {
@@ -44,19 +45,35 @@ namespace Private_Note.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "User Name")]
+            public string UserName { get; set; }
+
+            [Required]
             [EmailAddress]
+            [Display(Name = "Email Address")]
             public string Email { get; set; }
 
             [Required]
+            [StringLength(30, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
+            [Display(Name = "Password")]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
+            [Required]
+            [StringLength(16, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Secret Password")]
+            public string SecretPassword { get; set; }
             public bool RememberMe { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            if(User.Identity.IsAuthenticated)
+            {
+                Response.Redirect("/UserHome");
+            }
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -78,13 +95,30 @@ namespace Private_Note.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                //var user = new ApplicationUser
+                //{
+                //    UserName = Input.UserName,
+                //    Email = Input.Email,
+                //    Password = Input.Password,
+                //    SecretPassword = Methods.Encrypt(Input.SecretPassword),
+                //    IsUser = true,
+                //    AccessFailedCount = 0
+                //};
+                var user = await _userManager.FindByNameAsync(Input.UserName);
+                if(user != null)
+                {
+                    user.SecretPassword = Methods.Decrypt(user.SecretPassword);
+                }
+                var result = await _signInManager.PasswordSignInAsync(
+                    user,
+                    Input.Password,
+                    isPersistent: false,
+                    lockoutOnFailure: false
+                    );
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return RedirectToAction("Index", "UserHome");
                 }
                 if (result.RequiresTwoFactor)
                 {
