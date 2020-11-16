@@ -169,3 +169,8 @@ C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razo
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LoginPartial.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_AuthLayout.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Views\UserHome\Index.cshtml.g.cs
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\AdminLogin.cshtml.g.cs
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\AdminRegister.cshtml.g.cs
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Views\AdminHome\Index.cshtml.g.cs
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_AdminRegisterLayout.cshtml.g.cs
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_AdminLoginLayout.cshtml.g.cs

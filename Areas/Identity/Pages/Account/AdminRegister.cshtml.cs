@@ -19,15 +19,14 @@ using Private_Note.EncryptAndDecrypt;
 namespace Private_Note.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    [Authorize]
-    public class RegisterModel : PageModel
+    public class AdminRegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public RegisterModel(
+        public AdminRegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
@@ -83,10 +82,10 @@ namespace Private_Note.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                Response.Redirect("/UserHome");
-            }
+            //if (User.Identity.IsAuthenticated)
+            //{
+            //    Response.Redirect("/AdminHome");
+            //}
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -102,14 +101,14 @@ namespace Private_Note.Areas.Identity.Pages.Account
                     Email = Input.Email,
                     Password = Input.Password,
                     SecretPassword = Methods.Encrypt(Input.SecretPassword),
-                    IsUser = true,
-                    IsAdmin = false,
+                    IsUser = false,
+                    IsAdmin = true,
                     AccessFailedCount = 0
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("Admin created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -139,7 +138,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-            return RedirectToAction("Index", "UserHome");
+            return RedirectToAction("Index", "AdminHome");
         }
     }
 }
