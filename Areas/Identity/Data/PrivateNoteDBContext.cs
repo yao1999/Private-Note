@@ -28,7 +28,8 @@ namespace Private_Note.Data
                     c.FileName,
                     c.FileType,
                     c.File,
-                    c.CreatedDate
+                    c.CreatedDate,
+                    c.UserName
                 });
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.

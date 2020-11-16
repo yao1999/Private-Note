@@ -22,5 +22,6 @@ namespace Private_Note.Areas.Identity.Data
         [MaxLength(16)]
         public string SecretPassword { get; set; }
         public bool IsUser { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

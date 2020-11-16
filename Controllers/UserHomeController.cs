@@ -16,13 +16,14 @@ namespace Private_Note.Controllers
     public class UserHomeController : Controller
     {
         private readonly PrivateNoteDBContext _context;
+
         public UserHomeController(PrivateNoteDBContext context)
         {
             _context = context;
         }
         public IActionResult Index()
         {
-            IEnumerable<Files> AllFiles = _context.Files;
+            IEnumerable<Files> AllFiles = _context.Files.Where(u => u.UserName == User.Identity.Name);
             return View(AllFiles);
         }
 
@@ -39,7 +40,8 @@ namespace Private_Note.Controllers
                         {
                             FileName = Path.GetFileNameWithoutExtension(files.FileName), //Getting FileName 
                             FileType = Path.GetExtension(Path.GetFileName(files.FileName)), //Getting Extension
-                            CreatedDate = DateTime.Now //Getting current time
+                            CreatedDate = DateTime.Now, //Getting current time
+                            UserName = User.Identity.Name //get the current user name
                         };
 
                         using (var target = new MemoryStream())
@@ -62,11 +64,17 @@ namespace Private_Note.Controllers
             return RedirectToAction("Index", "UserHome");
         }
 
-        public IActionResult FileDownload(string givenFileName)
+        public IActionResult FileDownload([FromForm] string FileName, [FromForm] string FileExtension)
         {
-            //var currentFile = _context.Files.SingleOrDefault(r => r.FileName == givenFileName);
-            var currentFile = _context.Files.SingleOrDefault(r => r.FileName == "privateNoteTester");
-            if(currentFile != null)
+            if (FileExtension.Contains('.')==false)
+            {
+                FileExtension=FileExtension.Insert(0, ".");
+            }
+            var currentFile = _context.Files.SingleOrDefault(r =>
+                                            r.FileName == FileName &&
+                                            r.FileType == FileExtension &&
+                                            r.UserName == User.Identity.Name);
+            if (currentFile != null)
             {
                 var memory = new MemoryStream(currentFile.File);
                 memory.Position = 0;
@@ -76,10 +84,20 @@ namespace Private_Note.Controllers
             return RedirectToAction("Index", "UserHome");
         }
 
-        //public IActionResult FileSearch() // return filename to copy thing 
-        //{
-        //    return RedirectToAction("Index", "UserHome");
-        //}
+        public IActionResult FileDelete([FromForm] string FileName, [FromForm] string FileExtension)
+        {
+            if (FileExtension.Contains('.') == false)
+            {
+                FileExtension = FileExtension.Insert(0, ".");
+            }
+            var currentFile = _context.Files.SingleOrDefault(r =>
+                                            r.FileName == FileName &&
+                                            r.FileType == FileExtension && 
+                                            r.UserName == User.Identity.Name);
+            _context.Files.Remove(currentFile);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "UserHome");
+        }
 
         private Dictionary<string, string> AllFileType()
         {

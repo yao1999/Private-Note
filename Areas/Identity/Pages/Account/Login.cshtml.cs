@@ -95,15 +95,6 @@ namespace Private_Note.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                //var user = new ApplicationUser
-                //{
-                //    UserName = Input.UserName,
-                //    Email = Input.Email,
-                //    Password = Input.Password,
-                //    SecretPassword = Methods.Encrypt(Input.SecretPassword),
-                //    IsUser = true,
-                //    AccessFailedCount = 0
-                //};
                 var user = await _userManager.FindByNameAsync(Input.UserName);
                 if(user != null)
                 {

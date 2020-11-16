@@ -14,6 +14,7 @@ namespace Private_Note.Models
         //[MaxLength(100)]
         [DisplayName("File Name")]
         public string FileName { get; set; }
+        public string UserName { get; set; }
         //MaxLength(100)]
         [DisplayName("File Type")]
         public string FileType { get; set; }

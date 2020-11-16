@@ -9,6 +9,14 @@
     <Compile Remove="Migrations\20201114020713_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20201114020914_allGood.cs" />
     <Compile Remove="Migrations\20201114020914_allGood.Designer.cs" />
+    <Compile Remove="Migrations\20201116204458_adminAdded.cs" />
+    <Compile Remove="Migrations\20201116204458_adminAdded.Designer.cs" />
+    <Compile Remove="Migrations\20201116204916_adminstuff.cs" />
+    <Compile Remove="Migrations\20201116204916_adminstuff.Designer.cs" />
+    <Compile Remove="Migrations\20201116205120_adminstuff.cs" />
+    <Compile Remove="Migrations\20201116205120_adminstuff.Designer.cs" />
+    <Compile Remove="Migrations\20201116205657_adminandfilestuff.cs" />
+    <Compile Remove="Migrations\20201116205657_adminandfilestuff.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

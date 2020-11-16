@@ -102,6 +102,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                     Password = Input.Password,
                     SecretPassword = Methods.Encrypt(Input.SecretPassword),
                     IsUser = true,
+                    IsAdmin = false,
                     AccessFailedCount = 0
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);

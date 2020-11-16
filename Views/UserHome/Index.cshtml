@@ -19,16 +19,36 @@
             </div>
         </form>
         <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDownload">
-            <div class="form-group">
-                <div class="col-md-10">
-                    <p>Download file</p>
-
-                    <input name="name" type="text" />
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <p>Download file</p>
+                        <input name="filename" type="text" />
+                    </div>
+                    <div class="col-md-10">
+                        <input name="fileextension" type="text" />
+                    </div>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-10">
                     <input class="btn btn-success" type="submit" value="Download" />
+                </div>
+            </div>
+        </form>
+        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDelete">
+            <div class="row">
+                <div class="col-md-10" >
+                    <div class="form-group">
+                        <p>Delete file</p>
+                        <input name="filename" type="text" />
+                        <input name="fileextension" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input class="btn btn-success" type="submit" value="Delete" />
                 </div>
             </div>
         </form>
@@ -67,6 +87,6 @@
     }
     else
     {
-        <p>No User exist</p>
+        <p>No File exist</p>
     }
 </div> 
