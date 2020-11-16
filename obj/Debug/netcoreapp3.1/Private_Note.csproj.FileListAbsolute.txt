@@ -174,3 +174,4 @@ C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razo
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Views\AdminHome\Index.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_AdminRegisterLayout.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_AdminLoginLayout.cshtml.g.cs
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.csprojAssemblyReference.cache

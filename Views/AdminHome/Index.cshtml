@@ -11,13 +11,45 @@
         <h2 class="text-primary">User List</h2>
     </div>
     @*<div class="col-6 text-right">
-        <a asp-controller="AdminHome" asp-action="DeleteUser" class="btn btn-primary">
-            Delete User
-        </a>
-    </div>*@
+            <a asp-controller="AdminHome" asp-action="DeleteUser" class="btn btn-primary">
+                Delete User
+            </a>
+        </div>*@
+    <form method="post" enctype="multipart/form-data" asp-controller="AdminHome" asp-action="DeleteUser">
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <p>Delete User</p>
+                    <input name="userName" type="text" placeholder="User Name"/>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input class="btn btn-success" type="submit" value="Delete" />
+            </div>
+        </div>
+    </form>
+    <form method="post" enctype="multipart/form-data" asp-controller="AdminHome" asp-action="ChangeSecretPassword">
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <p>Change Secret Password</p>
+                    <input name="userName" type="text" placeholder="User Name"/>
+                </div>
+                <div class="col-md-10">
+                    <input name="secretPassword" type="text" placeholder="Secret Password"/>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input class="btn btn-success" type="submit" value="Change Secret Password" />
+            </div>
+        </div>
+    </form>
     <div class="col-6 text-right">
-        @*<a class="btn btn-primary" href='/Identity/Account/AdminRegister'>Add Admin</a>*@
-        <a href='/Identity/Account/AdminRegister' class ="btn btn-primary" >
+        <a href='/Identity/Account/AdminRegister' class="btn btn-primary">
             Add Admin
         </a>
     </div>
