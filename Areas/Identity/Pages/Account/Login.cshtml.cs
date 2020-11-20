@@ -96,10 +96,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(Input.UserName);
-                if(user != null)
-                {
-                    user.SecretPassword = Methods.Decrypt(user.SecretPassword);
-                }
+                Input.SecretPassword = Methods.Encrypt(Input.SecretPassword);
                 var result = await _signInManager.PasswordSignInAsync(
                     user,
                     Input.Password,
@@ -109,6 +106,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    await _userManager.ResetAccessFailedCountAsync(user);
                     return RedirectToAction("Index", "UserHome");
                 }
                 if (result.RequiresTwoFactor)
@@ -117,16 +115,17 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    _logger.LogWarning("User account locked out, please contact the admin to unlock your account.");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "User account locked out, please contact the admin to unlock your account.");
+                    await _userManager.AccessFailedAsync(user);
                     return Page();
                 }
             }
-
+            //await _userManager.AccessFailedAsync(userInDB);
             // If we got this far, something failed, redisplay form
             return Page();
         }

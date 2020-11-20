@@ -27,6 +27,9 @@ namespace Private_Note.Areas.Identity
                     options.Password.RequireLowercase = false;
                     options.Password.RequireUppercase = false;
                     options.Password.RequireNonAlphanumeric = false;
+                    options.Lockout.AllowedForNewUsers = true;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.MaxFailedAccessAttempts = 5;
                 })
                     .AddEntityFrameworkStores<PrivateNoteDBContext>();
             });

@@ -96,10 +96,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(Input.UserName);
-                if(user != null)
-                {
-                    user.SecretPassword = Methods.Decrypt(user.SecretPassword);
-                }
+                Input.SecretPassword = Methods.Encrypt(Input.SecretPassword);
                 var result = await _signInManager.PasswordSignInAsync(
                     user,
                     Input.Password,
@@ -109,7 +106,12 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    await _userManager.ResetAccessFailedCountAsync(user);
                     return RedirectToAction("Index", "AdminHome");
+                }
+                if(user != null && user.AccessFailedCount >= 5)
+                {
+                    await _userManager.SetLockoutEnabledAsync(user, true);
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -123,6 +125,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    await _userManager.AccessFailedAsync(user);
                     return Page();
                 }
             }
