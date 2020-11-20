@@ -11,6 +11,7 @@ namespace Private_Note.Models
 {
     public class Files
     {
+        public int Id { get; set; }
         //[MaxLength(100)]
         [DisplayName("File Name")]
         public string FileName { get; set; }

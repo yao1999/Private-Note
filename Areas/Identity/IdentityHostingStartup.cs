@@ -22,6 +22,7 @@ namespace Private_Note.Areas.Identity
 
                 services.AddDefaultIdentity<ApplicationUser>(options => 
                 {
+                    options.SignIn.RequireConfirmedEmail = true;
                     options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireUppercase = false;

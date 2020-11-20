@@ -19,7 +19,7 @@ using Private_Note.EncryptAndDecrypt;
 namespace Private_Note.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    [Authorize]
+    //[Authorize]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -122,6 +122,8 @@ namespace Private_Note.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
+                   
+
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
@@ -129,7 +131,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return RedirectToAction("Index", "UserHome");
                     }
                 }
                 foreach (var error in result.Errors)
@@ -137,7 +139,6 @@ namespace Private_Note.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
             // If we got this far, something failed, redisplay form
             return RedirectToAction("Index", "UserHome");
         }
