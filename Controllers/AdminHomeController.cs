@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Private_Note.Areas.Identity.Data;
+using Private_Note.Common;
 using Private_Note.EncryptAndDecrypt;
 
 namespace Private_Note.Controllers
 {
+    //[Authorize("PolicyName")]
+    //[IsAdminAuth]
     [Authorize]
     public class AdminHomeController : Controller
     {

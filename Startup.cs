@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EmailService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,6 +26,20 @@ namespace Private_Note
         {
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddAuthorization(options =>
+                options.AddPolicy("PolicyName", p =>
+                {
+                    p.RequireAuthenticatedUser();
+                    p.RequireClaim("IsAdmin", "true");
+                    p.Build();
+                    //p.Requirements.Add(new IsAdminRequirement());
+                })
+            );
+            var emailConfig = Configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

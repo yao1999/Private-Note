@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Private_Note.Areas.Identity.Data;
 using Private_Note.EncryptAndDecrypt;
+using EmailService;
 
 namespace Private_Note.Areas.Identity.Pages.Account
 {
@@ -22,14 +23,17 @@ namespace Private_Note.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly EmailService.IEmailSender _emailSender;
 
         public AdminLoginModel(SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            EmailService.IEmailSender EmailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _emailSender = EmailSender;
         }
 
         [BindProperty]
@@ -109,10 +113,6 @@ namespace Private_Note.Areas.Identity.Pages.Account
                     await _userManager.ResetAccessFailedCountAsync(user);
                     return RedirectToAction("Index", "AdminHome");
                 }
-                if(user != null && user.AccessFailedCount >= 5)
-                {
-                    await _userManager.SetLockoutEnabledAsync(user, true);
-                }
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
@@ -120,6 +120,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
+                    SendEmailToUser(user);
                     return RedirectToPage("./Lockout");
                 }
                 else
@@ -132,6 +133,25 @@ namespace Private_Note.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        public void SendEmailToUser(ApplicationUser user)
+        {
+            var UserEmails = new string[] { user.Email };
+            string subject = "Account LockedOut";
+            IEnumerable<ApplicationUser> adminTeam = _userManager.Users.Where(u => u.IsAdmin == true);
+            var admins = new List<string>();
+
+            foreach (var admin in adminTeam)
+            {
+                admins.Add(admin.Email);
+            }
+            string allAdmins = string.Join(", ", admins);
+            string content = "Hi " + user.UserName + ", Someone trying to access your account at " + DateTime.Now + ", " +
+                "the account is locked right now, the end is " + user.LockoutEnd + ". " +
+                "Please contact one of our admins: " + allAdmins + ".";
+            var message = new Message(UserEmails, subject, content);
+            _emailSender.SendEmail(message);
         }
     }
 }

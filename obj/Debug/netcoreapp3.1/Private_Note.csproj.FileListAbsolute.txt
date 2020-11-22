@@ -175,3 +175,9 @@ C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razo
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_AdminRegisterLayout.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_AdminLoginLayout.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.csprojAssemblyReference.cache
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\MailKit.dll
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\MimeKit.dll
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\NETCore.MailKit.dll
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\EmailService.dll
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\EmailService.pdb

@@ -14,18 +14,33 @@ using Private_Note.Models;
 
 namespace Private_Note.Common
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class IsAdminAuthAttribute : Attribute
+    //[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    public class IsAdminAuthAttribute : ActionFilterAttribute
     {
-        public void OnActionExecuting(ActionExecutingContext context)
+        public bool IsAdmin { get; set; }
+        //public override void OnActionExecuting(ActionExecutingContext filterContext)
+        //{
+        //    bool isAdmin = IsAdmin;
+        //    //if (string.IsNullOrEmpty(name))
+        //    //    name = filterContext.Controller.GetType().Name;
+                 
+
+        //    filterContext.Controller.ViewData["IsAdminAuth"] = IsAdmin;
+        //    base.OnActionExecuting(filterContext);
+        //}
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            //if (User.Identity.IsAdmin == false)
-            //{
-            //    // don't continue
-            //    context.HttpContext.Response.StatusCode = 403;
-            //    return;
-            //}
-            return;
+            Controller controller = filterContext.Controller as Controller;
+
+            if (controller != null)
+            {
+                //getting a service
+                //IMyService myService = controller.HttpContext.RequestServices.GetService(typeof(IMyService)) as IMyService;
+                var isAdmin = controller.Equals(filterContext);
+                //injecting values in the ViewData
+                controller.ViewData["IsAdminAuth"] = isAdmin;
+                base.OnActionExecuting(filterContext);
+            }
         }
     }
 }
