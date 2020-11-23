@@ -117,7 +117,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
-                if (result.IsLockedOut)
+                if (result.IsLockedOut && user.LockoutEnd != null)
                 {
                     _logger.LogWarning("User account locked out.");
                     SendEmailToUser(user);

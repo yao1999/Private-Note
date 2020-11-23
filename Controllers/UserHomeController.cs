@@ -6,8 +6,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Private_Note.Areas.Identity.Data;
 using Private_Note.Data;
+using Private_Note.EncryptAndDecrypt;
 using Private_Note.Models;
 
 namespace Private_Note.Controllers
@@ -16,10 +19,12 @@ namespace Private_Note.Controllers
     public class UserHomeController : Controller
     {
         private readonly PrivateNoteDBContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserHomeController(PrivateNoteDBContext context)
+        public UserHomeController(PrivateNoteDBContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -113,6 +118,19 @@ namespace Private_Note.Controllers
                 { ".pptx", "application/vnd.ms-powerpoint" }
             };
             return fileTypes;
+        }
+
+        public async Task<IActionResult> ChangeSecretPassword([FromForm] string secretPassword)
+        {
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (currentUser == null)
+            {
+                return RedirectToAction("Index", "UserHome");
+            }
+            currentUser.SecretPassword = Methods.Encrypt(secretPassword);
+            await _userManager.UpdateAsync(currentUser);
+            ModelState.AddModelError(string.Empty, "Secret password changed.");
+            return RedirectToAction("Index", "UserHome");
         }
     }
 }

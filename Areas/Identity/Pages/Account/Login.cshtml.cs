@@ -109,6 +109,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    await _userManager.SetLockoutEndDateAsync(user, null);
                     await _userManager.ResetAccessFailedCountAsync(user);
                     return RedirectToAction("Index", "UserHome");
                 }
@@ -116,7 +117,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
-                if (result.IsLockedOut)
+                if (result.IsLockedOut || user.LockoutEnd != null)
                 {
                     _logger.LogWarning("User account locked out, please contact the admin to unlock your account.");
                     SendEmailToUser(user);

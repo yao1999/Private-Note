@@ -23,10 +23,10 @@
                 <div class="form-group">
                     <div class="col-md-10">
                         <p>Download file</p>
-                        <input name="filename" type="text" placeholder="File Name"/>
+                        <input name="filename" type="text" placeholder="File Name" />
                     </div>
                     <div class="col-md-10">
-                        <input name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)"/>
+                        <input name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
                     </div>
                 </div>
             </div>
@@ -38,11 +38,11 @@
         </form>
         <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDelete">
             <div class="row">
-                <div class="col-md-10" >
+                <div class="col-md-10">
                     <div class="form-group">
                         <p>Delete file</p>
-                        <input name="filename" type="text" placeholder="File Name"/>
-                        <input name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)"/>
+                        <input name="filename" type="text" placeholder="File Name" />
+                        <input name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
                     </div>
                 </div>
             </div>
@@ -52,7 +52,21 @@
                 </div>
             </div>
         </form>
-
+        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="ChangeSecretPassword">
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <p>Change Secret Password</p>
+                        <input name="secretPassword" type="text" placeholder="Secret Password" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input class="btn btn-success" type="submit" value="Change Secret Password" />
+                </div>
+            </div>
+        </form>
     </div>
     <div class="col-6">
         <h2 class="text-primary">All Files</h2>

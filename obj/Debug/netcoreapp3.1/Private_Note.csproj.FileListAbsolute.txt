@@ -1,6 +1,5 @@
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\appsettings.Development.json
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\appsettings.json
-C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Private_Note.exe
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Private_Note.deps.json
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Private_Note.runtimeconfig.json
@@ -158,8 +157,6 @@ C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Micr
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.csproj.CoreCompileInputs.cache
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Private_Note.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Properties\serviceDependencies.json
-C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\Properties\serviceDependencies.local.json
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\Login.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\Register.cshtml.g.cs
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\_ViewImports.cshtml.g.cs
@@ -181,3 +178,4 @@ C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\NETC
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\EmailService.dll
 C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\bin\Debug\netcoreapp3.1\EmailService.pdb
+C:\Users\Yao\OneDrive\Documents\GitHub\Private_Note\obj\Debug\netcoreapp3.1\scopedcss\bundle\Private_Note.styles.css
