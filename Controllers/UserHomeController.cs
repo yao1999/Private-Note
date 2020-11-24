@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,76 +33,114 @@ namespace Private_Note.Controllers
             return View(AllFiles);
         }
 
-        public IActionResult FileUpload(IFormFile files)
+        [HttpPost]
+        public IActionResult FileUpload([FromForm] IFormFile files)
         {
-            if (files != null)
+            try
             {
-                var FileExtension = Path.GetExtension(Path.GetFileName(files.FileName));
-                if(AllFileType().ContainsKey(FileExtension))
+                if (files != null)
                 {
-                    if (files.Length > 0)
+                    var FileExtension = Path.GetExtension(Path.GetFileName(files.FileName));
+                    if (AllFileType().ContainsKey(FileExtension))
                     {
-                        var objfiles = new Files()
+                        if (files.Length > 0)
                         {
-                            FileName = Path.GetFileNameWithoutExtension(files.FileName), //Getting FileName 
-                            FileType = Path.GetExtension(Path.GetFileName(files.FileName)), //Getting Extension
-                            CreatedDate = DateTime.Now, //Getting current time
-                            UserName = User.Identity.Name //get the current user name
-                        };
+                            var objfiles = new Files()
+                            {
+                                FileName = Path.GetFileNameWithoutExtension(files.FileName), //Getting FileName 
+                                FileType = Path.GetExtension(Path.GetFileName(files.FileName)), //Getting Extension
+                                CreatedDate = DateTime.Now, //Getting current time
+                                UserName = User.Identity.Name //get the current user name
+                            };
 
-                        using (var target = new MemoryStream())
-                        {
-                            files.CopyTo(target);
-                            objfiles.File = target.ToArray(); //Getting file data
+                            using (var target = new MemoryStream())
+                            {
+                                files.CopyTo(target);
+                                objfiles.File = target.ToArray(); //Getting file data
+                            }
+
+                            _context.Files.Add(objfiles);
+                            _context.SaveChanges();
+
                         }
-
-                        _context.Files.Add(objfiles);
-                        _context.SaveChanges();
-
                     }
-                }
-            }
-            else
-            {
-                return RedirectToAction("Index", "UserHome");
-            }
 
-            return RedirectToAction("Index", "UserHome");
+                    return RedirectToAction("Index", "UserHome");
+                }
+                else
+                {
+                    JsonResult error = new JsonResult("No File Uploaded");
+                    return error;
+                }
+
+            }
+            catch (Exception e)
+            {
+                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return failed;
+            }
         }
 
         public IActionResult FileDownload([FromForm] string FileName, [FromForm] string FileExtension)
         {
-            if (FileExtension.Contains('.')==false)
+            try
             {
-                FileExtension=FileExtension.Insert(0, ".");
+                if (FileExtension.Contains('.') == false)
+                {
+                    FileExtension = FileExtension.Insert(0, ".");
+                }
+                var currentFile = _context.Files.SingleOrDefault(r =>
+                                                r.FileName == FileName &&
+                                                r.FileType == FileExtension &&
+                                                r.UserName == User.Identity.Name);
+                if (currentFile != null)
+                {
+                    var memory = new MemoryStream(currentFile.File);
+                    memory.Position = 0;
+                    var fileNameAndExtension = string.Concat(currentFile.FileName, currentFile.FileType);
+                    return File(memory, AllFileType()[currentFile.FileType], fileNameAndExtension);
+                }
+                else
+                {
+                    JsonResult error = new JsonResult("File Not Found"){ StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
+                }
             }
-            var currentFile = _context.Files.SingleOrDefault(r =>
-                                            r.FileName == FileName &&
-                                            r.FileType == FileExtension &&
-                                            r.UserName == User.Identity.Name);
-            if (currentFile != null)
+            catch (Exception e)
             {
-                var memory = new MemoryStream(currentFile.File);
-                memory.Position = 0;
-                var fileNameAndExtension = string.Concat(currentFile.FileName, currentFile.FileType);
-                return File(memory, AllFileType()[currentFile.FileType], fileNameAndExtension);
+                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return failed;
             }
-            return RedirectToAction("Index", "UserHome");
         }
 
-        public IActionResult FileDelete([FromForm] string FileName, [FromForm] string FileExtension)
+        [HttpPost]
+        public JsonResult FileDelete([FromForm] string FileName, [FromForm] string FileExtension)
         {
-            if (FileExtension.Contains('.') == false)
+            try
             {
-                FileExtension = FileExtension.Insert(0, ".");
+                if (FileExtension.Contains('.') == false)
+                {
+                    FileExtension = FileExtension.Insert(0, ".");
+                }
+                var currentFile = _context.Files.SingleOrDefault(r =>
+                                                r.FileName == FileName &&
+                                                r.FileType == FileExtension &&
+                                                r.UserName == User.Identity.Name);
+                if(currentFile == null)
+                {
+                    JsonResult error = new JsonResult("File Not Found") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
+                }
+                _context.Files.Remove(currentFile);
+                _context.SaveChanges();
+                JsonResult success = new JsonResult("File Successfully Removed");
+                return success;
             }
-            var currentFile = _context.Files.SingleOrDefault(r =>
-                                            r.FileName == FileName &&
-                                            r.FileType == FileExtension && 
-                                            r.UserName == User.Identity.Name);
-            _context.Files.Remove(currentFile);
-            _context.SaveChanges();
-            return RedirectToAction("Index", "UserHome");
+            catch (Exception e)
+            {
+                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return failed;
+            }
         }
 
         private Dictionary<string, string> AllFileType()
@@ -121,18 +160,28 @@ namespace Private_Note.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeSecretPassword([FromForm] string secretPassword)
+        public async Task<JsonResult> ChangeSecretPassword([FromForm] string secretPassword)
         {
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (currentUser == null)
+            try
             {
-                return RedirectToAction("Index", "UserHome");
+                var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+                if (currentUser == null)
+                {
+                    JsonResult error = new JsonResult("User not found") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
+                }
+                currentUser.SecretPassword = Methods.Encrypt(secretPassword);
+                await _userManager.UpdateAsync(currentUser);
+
+                JsonResult success = new JsonResult("Secret Password Successfully Changed");
+                return success;
             }
-            currentUser.SecretPassword = Methods.Encrypt(secretPassword);
-            await _userManager.UpdateAsync(currentUser);
-
-            return RedirectToAction("Index", "UserHome");
-
+            catch(Exception e)
+            {
+                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return failed;
+            }
+            
         }
     }
 }

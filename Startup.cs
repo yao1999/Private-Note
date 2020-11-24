@@ -25,7 +25,7 @@ namespace Private_Note
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddAuthorization(options =>
                 options.AddPolicy("PolicyName", p =>
                 {

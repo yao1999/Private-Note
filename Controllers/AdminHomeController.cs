@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using EmailService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Private_Note.Areas.Identity.Data;
-using Private_Note.Common;
 using Private_Note.EncryptAndDecrypt;
 
 namespace Private_Note.Controllers
 {
-    //[Authorize("PolicyName")]
-    //[IsAdminAuth]
     [Authorize]
     public class AdminHomeController : Controller
     {
@@ -27,8 +25,13 @@ namespace Private_Note.Controllers
             _userManager = userManager;
             _emailSender = emailSender;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
+            if(currentUser.IsAdmin==false)
+            {
+                return RedirectToAction("Index", "UserHome");
+            }
             IEnumerable<ApplicationUser> Users = _userManager.Users;
             foreach (var user in Users)
             {
@@ -38,54 +41,78 @@ namespace Private_Note.Controllers
             return View(Users);
         }
 
-        public async Task<IActionResult> DeleteUser([FromForm] string userName)
+        [HttpPost]
+        public async Task<JsonResult> DeleteUser([FromForm] string userName)
         {
-            var currentUser = await _userManager.FindByNameAsync(userName);
-            if (currentUser == null || currentUser.IsAdmin == true)
+            try
             {
-                return RedirectToAction("Index", "AdminHome");
+                var currentUser = await _userManager.FindByNameAsync(userName);
+                if (currentUser == null || currentUser.IsAdmin == true)
+                {
+                    JsonResult error = new JsonResult("User not found Or User is Admin") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
+                }
+                await _userManager.DeleteAsync(currentUser);
+                JsonResult success = new JsonResult("User Successfully Removed");
+                return success;
             }
-            await _userManager.DeleteAsync(currentUser);
-            return RedirectToAction("Index", "AdminHome");
-        }
-
-        public async Task<IActionResult> ChangeSecretPassword([FromForm] string userName, [FromForm] string secretPassword)
-        {
-            var currentUser = await _userManager.FindByNameAsync(userName);
-            if (currentUser == null || currentUser.IsAdmin == true)
+            catch (Exception e)
             {
-                return RedirectToAction("Index", "AdminHome");
+                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return failed;
             }
-            currentUser.SecretPassword = Methods.Encrypt(secretPassword);
-            await _userManager.UpdateAsync(currentUser);
-            return RedirectToAction("Index", "AdminHome");
         }
 
-
-        public async Task<IActionResult> ContactUser(
-            [FromForm] string userName, 
-            [FromForm] string subject, 
-            [FromForm] string content)
+        [HttpPost]
+        public async Task<JsonResult> ChangeSecretPassword([FromForm] string userName, [FromForm] string secretPassword)
         {
-            var currentUser = await _userManager.FindByNameAsync(userName);
-            var UserEmails = new string[] { currentUser.Email };
-            var message = new Message(UserEmails, subject, content);
-            _emailSender.SendEmail(message);
-            return RedirectToAction("Index", "AdminHome");
+            try
+            {
+                var currentUser = await _userManager.FindByNameAsync(userName);
+                if (currentUser == null)
+                {
+                    JsonResult error = new JsonResult("User not found") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
+                }
+                currentUser.SecretPassword = Methods.Encrypt(secretPassword);
+                await _userManager.UpdateAsync(currentUser);
+
+                JsonResult success = new JsonResult("User's Secret Password Successfully Changed");
+                return success;
+            }
+            catch (Exception e)
+            {
+                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return failed;
+            }
         }
 
-        public async Task SendEmailToUserAsync(
+        [HttpPost]
+        public async Task<JsonResult> ContactUser(
             [FromForm] string userName, 
             [FromForm] string subject, 
             [FromForm] string content,
             [FromForm] string userType)
         {
-            var user = await _userManager.FindByNameAsync(userName);
-            if (TypeCheck(user, userType) == true)
+            try
             {
+                var user = await _userManager.FindByNameAsync(userName);
+                if (TypeCheck(user, userType) == false)
+                {
+                    JsonResult error = new JsonResult("User Type Not Match") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
+                    
+                }
                 var UserEmails = new string[] { user.Email };
                 var message = new Message(UserEmails, subject, content);
                 _emailSender.SendEmail(message);
+                JsonResult success = new JsonResult("Email Sent");
+                return success;
+            }
+            catch (Exception e)
+            {
+                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return failed;
             }
         }
 
@@ -103,6 +130,5 @@ namespace Private_Note.Controllers
 
             return false;
         }
-
     }
 }

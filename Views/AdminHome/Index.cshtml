@@ -15,12 +15,12 @@
                 Delete User
             </a>
         </div>*@
-    <form method="post" enctype="multipart/form-data" asp-controller="AdminHome" asp-action="DeleteUser">
+    <form id="DeleteUser">
         <div class="row">
             <div class="form-group">
                 <div class="col-md-10">
                     <p>Delete User</p>
-                    <input name="userName" type="text" placeholder="User Name" />
+                    <input id="userName" name="userName" type="text" placeholder="User Name" />
                 </div>
             </div>
         </div>
@@ -30,15 +30,15 @@
             </div>
         </div>
     </form>
-    <form method="post" enctype="multipart/form-data" asp-controller="AdminHome" asp-action="ChangeSecretPassword">
+    <form id="ChangeSecretPasswordForm" >
         <div class="row">
             <div class="form-group">
                 <div class="col-md-10">
                     <p>Change Secret Password</p>
-                    <input name="userName" type="text" placeholder="User Name" />
+                    <input id="userName" name="userName" type="text" placeholder="User Name" />
                 </div>
                 <div class="col-md-10">
-                    <input name="secretPassword" type="text" placeholder="Secret Password" />
+                    <input id="secretPassword" name="secretPassword" type="text" placeholder="Secret Password" />
                 </div>
             </div>
         </div>
@@ -48,19 +48,19 @@
             </div>
         </div>
     </form>
-    <form method="post" enctype="multipart/form-data" asp-controller="AdminHome" asp-action="ContactUser">
+    <form id="ContactUser">
         <div class="row">
             <div class="form-group">
                 <div class="col-md-10">
                     <p>Contact User</p>
-                    <input name="userType" type="text" placeholder="U(User) A(Admin)" />
-                    <input name="userName" type="text" placeholder="User Name" />
+                    <input id="userType" name="userType" type="text" placeholder="U(User) A(Admin)" />
+                    <input id="userName" name="userName" type="text" placeholder="User Name" />
                 </div>
                 <div class="col-md-10">
-                    <input name="subject" type="text" placeholder="subject" />
+                    <input id="subject" name="subject" type="text" placeholder="subject" />
                 </div>
                 <div class="col-md-10">
-                    <textarea name="content" type="text" rows="20" cols="50" placeholder="content"></textarea>
+                    <textarea id="content" name="content" type="text" rows="20" cols="50" placeholder="content"></textarea>
                 </div>
             </div>
         </div>
@@ -119,3 +119,79 @@
     }
 </div>
 
+@section Scripts{
+    <script>
+        $("#DeleteUser").submit(function (e) {
+            e.preventDefault();
+            const userName = $("#userName").val();
+            $.ajax({
+                type: "POST",
+                url: "/AdminHome/DeleteUser",
+                data: {
+                    "userName": userName
+                },
+                success: function (data) {
+                    //console.log(data);
+                    toastr.success("User Successfully Removed");
+                    $("#userName").val("");
+                },
+                error: function (data) {
+                    toastr.error("User Unsuccessfully Removed");
+                    //console.log(data);
+                }
+            });
+        });
+        $("#ChangeSecretPasswordForm").submit(function (e){
+            e.preventDefault();
+            const userName = $("#userName").val();
+            const secretPassword = $("#secretPassword").val();
+            $.ajax({
+                type: "POST",
+                url: "/AdminHome/ChangeSecretPassword",
+                data: {
+                    "userName": userName,
+                    "secretPassword": secretPassword
+                },
+                success: function (data) {
+                    //console.log(data);
+                    toastr.success("User's Secret Password Successfully Changed");
+                    $("#secretPassword").val("");
+                    $("#userName").val("");
+                },
+                error: function (data) {
+                    toastr.error("User's Secret Password Unsuccessfully Changed");
+                    //console.log(data);
+                }
+            });
+        });
+        $("#ContactUser").submit(function (e) {
+            e.preventDefault();
+            const userType = $("#userType").val();
+            const userName = $("#userName").val();
+            const subject = $("#subject").val();
+            const content = $("#content").val();
+            $.ajax({
+                type: "POST",
+                url: "/AdminHome/ContactUser",
+                data: {
+                    "userType": userType,
+                    "userName": userName,
+                    "subject": subject,
+                    "content": content
+                },
+                success: function (data) {
+                    //console.log(data);
+                    toastr.success("Email Successfully Sent");
+                    $("#userType").val("");
+                    $("#userName").val("");
+                    $("#subject").val("");
+                    $("#content").val("");
+                },
+                error: function (data) {
+                    toastr.error("Email Unsuccessfully Sent");
+                    //console.log(data);
+                }
+            });
+        });
+    </script>
+}

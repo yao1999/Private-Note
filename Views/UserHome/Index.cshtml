@@ -18,7 +18,7 @@
                 </div>
             </div>
         </form>
-        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDownload">
+        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDownload" >
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-10">
@@ -36,13 +36,13 @@
                 </div>
             </div>
         </form>
-        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDelete">
+        <form id="FileDelete">
             <div class="row">
                 <div class="col-md-10">
                     <div class="form-group">
                         <p>Delete file</p>
-                        <input name="filename" type="text" placeholder="File Name" />
-                        <input name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
+                        <input id="filename" name="filename" type="text" placeholder="File Name" />
+                        <input id="fileextension" name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
                     </div>
                 </div>
             </div>
@@ -52,12 +52,12 @@
                 </div>
             </div>
         </form>
-        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="ChangeSecretPassword">
+        <form id="ChangeSecretPasswordForm">
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-10">
                         <p>Change Secret Password</p>
-                        <input name="secretPassword" type="text" placeholder="Secret Password" />
+                        <input id="secretPassword" name="secretPassword" type="text" placeholder="Secret Password" />
                     </div>
                 </div>
             </div>
@@ -104,3 +104,49 @@
         <p>No File exist</p>
     }
 </div> 
+
+@section Scripts{
+    <script>
+        $("#FileDelete").submit(function (e) {
+            e.preventDefault();
+            const filename = $("#filename").val();
+            const fileextension = $("#fileextension").val();
+            $.ajax({
+                type: "POST",
+                url: "/UserHome/FileDelete",
+                data: {
+                    "filename": filename,
+                    "fileextension": fileextension
+                },
+                success: function (data) {
+                    //console.log(data);
+                    toastr.success("File Successfully Removed");
+                    $("#filename").val("");
+                    $("#fileextension").val("");
+                },
+                error: function (data) {
+                    toastr.error("File Unsuccessfully Removed");
+                    //console.log(data);
+                }
+            });
+        });
+        $("#ChangeSecretPasswordForm").submit(function (e){
+            e.preventDefault();
+            const secretPassword = $("#secretPassword").val();
+            $.ajax({
+                type: "POST",
+                url: "/UserHome/ChangeSecretPassword",
+                data: { "secretPassword": secretPassword },
+                success: function (data) {
+                    //console.log(data);
+                    toastr.success("Secret Password Successfully Changed");
+                    $("#secretPassword").val("");
+                },
+                error: function (data) {
+                    toastr.error("Secret Password Unsuccessfully Changed");
+                    //console.log(data);
+                }
+            });
+        });
+    </script>
+ }
