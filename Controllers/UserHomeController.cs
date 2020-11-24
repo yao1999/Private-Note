@@ -120,6 +120,7 @@ namespace Private_Note.Controllers
             return fileTypes;
         }
 
+        [HttpPost]
         public async Task<IActionResult> ChangeSecretPassword([FromForm] string secretPassword)
         {
             var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -129,8 +130,9 @@ namespace Private_Note.Controllers
             }
             currentUser.SecretPassword = Methods.Encrypt(secretPassword);
             await _userManager.UpdateAsync(currentUser);
-            ModelState.AddModelError(string.Empty, "Secret password changed.");
+
             return RedirectToAction("Index", "UserHome");
+
         }
     }
 }

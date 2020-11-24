@@ -120,7 +120,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 if (result.IsLockedOut && user.LockoutEnd != null)
                 {
                     _logger.LogWarning("User account locked out.");
-                    SendEmailToUser(user);
+                    SendEmailToUser(user, "Account LockedOut");
                     return RedirectToPage("./Lockout");
                 }
                 else
@@ -135,10 +135,9 @@ namespace Private_Note.Areas.Identity.Pages.Account
             return Page();
         }
 
-        public void SendEmailToUser(ApplicationUser user)
+        public void SendEmailToUser(ApplicationUser user, string subject)
         {
             var UserEmails = new string[] { user.Email };
-            string subject = "Account LockedOut";
             IEnumerable<ApplicationUser> adminTeam = _userManager.Users.Where(u => u.IsAdmin == true);
             var admins = new List<string>();
 

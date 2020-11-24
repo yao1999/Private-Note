@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using EmailService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,13 +25,13 @@ namespace Private_Note.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly EmailService.IEmailSender _emailSender;
 
         public AdminRegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            EmailService.IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -110,26 +111,9 @@ namespace Private_Note.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("Admin created a new account with password.");
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("Index", "AdminHome");
-                    }
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    SendEmailToUser(user, "Welcome to Private Note");
+                    return RedirectToAction("Index", "AdminHome");
                 }
                 foreach (var error in result.Errors)
                 {
@@ -139,6 +123,23 @@ namespace Private_Note.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return RedirectToAction("Index", "AdminHome");
+        }
+
+        public void SendEmailToUser(ApplicationUser user, string subject)
+        {
+            var UserEmails = new string[] { user.Email };
+            IEnumerable<ApplicationUser> adminTeam = _userManager.Users.Where(u => u.IsAdmin == true);
+            var admins = new List<string>();
+
+            foreach (var admin in adminTeam)
+            {
+                admins.Add(admin.Email);
+            }
+            string allAdmins = string.Join(", ", admins);
+            string content = "Hi " + user.UserName + ", thank for being part of our admin team." +
+                " here is the rest of the team members: " + allAdmins + ".";
+            var message = new Message(UserEmails, subject, content);
+            _emailSender.SendEmail(message);
         }
     }
 }

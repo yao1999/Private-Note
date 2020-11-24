@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EmailService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,14 @@ namespace Private_Note.Controllers
     public class AdminHomeController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public AdminHomeController(UserManager<ApplicationUser> userManager)
+        public AdminHomeController(
+            UserManager<ApplicationUser> userManager, 
+            IEmailSender emailSender)
         {
             _userManager = userManager;
+            _emailSender = emailSender;
         }
         public IActionResult Index()
         {
@@ -56,6 +61,48 @@ namespace Private_Note.Controllers
             return RedirectToAction("Index", "AdminHome");
         }
 
+
+        public async Task<IActionResult> ContactUser(
+            [FromForm] string userName, 
+            [FromForm] string subject, 
+            [FromForm] string content)
+        {
+            var currentUser = await _userManager.FindByNameAsync(userName);
+            var UserEmails = new string[] { currentUser.Email };
+            var message = new Message(UserEmails, subject, content);
+            _emailSender.SendEmail(message);
+            return RedirectToAction("Index", "AdminHome");
+        }
+
+        public async Task SendEmailToUserAsync(
+            [FromForm] string userName, 
+            [FromForm] string subject, 
+            [FromForm] string content,
+            [FromForm] string userType)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (TypeCheck(user, userType) == true)
+            {
+                var UserEmails = new string[] { user.Email };
+                var message = new Message(UserEmails, subject, content);
+                _emailSender.SendEmail(message);
+            }
+        }
+
+        private bool TypeCheck(ApplicationUser user, string userType)
+        {
+            var type = userType.ToLower();
+            if (type == "u" || type == "user")
+            {
+                return user.IsUser;
+            }
+            else if (type == "a" || type == "admin")
+            {
+                return user.IsAdmin;
+            }
+
+            return false;
+        }
 
     }
 }

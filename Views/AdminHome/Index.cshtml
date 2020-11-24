@@ -20,7 +20,7 @@
             <div class="form-group">
                 <div class="col-md-10">
                     <p>Delete User</p>
-                    <input name="userName" type="text" placeholder="User Name"/>
+                    <input name="userName" type="text" placeholder="User Name" />
                 </div>
             </div>
         </div>
@@ -35,16 +35,38 @@
             <div class="form-group">
                 <div class="col-md-10">
                     <p>Change Secret Password</p>
-                    <input name="userName" type="text" placeholder="User Name"/>
+                    <input name="userName" type="text" placeholder="User Name" />
                 </div>
                 <div class="col-md-10">
-                    <input name="secretPassword" type="text" placeholder="Secret Password"/>
+                    <input name="secretPassword" type="text" placeholder="Secret Password" />
                 </div>
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-10">
                 <input class="btn btn-success" type="submit" value="Change Secret Password" />
+            </div>
+        </div>
+    </form>
+    <form method="post" enctype="multipart/form-data" asp-controller="AdminHome" asp-action="ContactUser">
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <p>Contact User</p>
+                    <input name="userType" type="text" placeholder="U(User) A(Admin)" />
+                    <input name="userName" type="text" placeholder="User Name" />
+                </div>
+                <div class="col-md-10">
+                    <input name="subject" type="text" placeholder="subject" />
+                </div>
+                <div class="col-md-10">
+                    <textarea name="content" type="text" rows="20" cols="50" placeholder="content"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input class="btn btn-success" type="submit" value="Contact User" />
             </div>
         </div>
     </form>
