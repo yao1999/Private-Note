@@ -2923,19 +2923,6 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
-      },
-      "EmailService/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v3.1",
-        "dependencies": {
-          "NETCore.MailKit": "2.0.3"
-        },
-        "compile": {
-          "bin/placeholder/EmailService.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/EmailService.dll": {}
-        }
       }
     }
   },
@@ -9440,22 +9427,17 @@
         "system.xml.xmlserializer.4.3.0.nupkg.sha512",
         "system.xml.xmlserializer.nuspec"
       ]
-    },
-    "EmailService/1.0.0": {
-      "type": "project",
-      "path": "../EmailService/EmailService.csproj",
-      "msbuildProject": "../EmailService/EmailService.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
-      "EmailService >= 1.0.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 3.1.10",
       "Microsoft.AspNetCore.Identity.UI >= 3.1.10",
       "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation >= 3.1.10",
       "Microsoft.EntityFrameworkCore.SqlServer >= 3.1.10",
       "Microsoft.EntityFrameworkCore.Tools >= 3.1.10",
-      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 3.1.4"
+      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 3.1.4",
+      "NETCore.MailKit >= 2.0.3"
     ]
   },
   "packageFolders": {
@@ -9485,11 +9467,7 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
-          "projectReferences": {
-            "C:\\Users\\Yao\\OneDrive\\Documents\\GitHub\\EmailService\\EmailService.csproj": {
-              "projectPath": "C:\\Users\\Yao\\OneDrive\\Documents\\GitHub\\EmailService\\EmailService.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       },
       "warningProperties": {
@@ -9527,6 +9505,10 @@
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
             "target": "Package",
             "version": "[3.1.4, )"
+          },
+          "NETCore.MailKit": {
+            "target": "Package",
+            "version": "[2.0.3, )"
           }
         },
         "imports": [
