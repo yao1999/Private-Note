@@ -32,13 +32,35 @@ namespace Private_Note.Controllers
             {
                 return RedirectToAction("Index", "UserHome");
             }
-            IEnumerable<ApplicationUser> Users = _userManager.Users;
+            IEnumerable<ApplicationUser> Users = _userManager.Users.Where(u => u.IsAdmin == false);
             foreach (var user in Users)
             {
                 var SecretPassword = Methods.Decrypt(user.SecretPassword);
                 user.SecretPassword = SecretPassword;
             }
             return View(Users);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetSecretPassword([FromForm] string userName)
+        {
+            try
+            {
+                var currentUser = await _userManager.FindByNameAsync(userName);
+                if (currentUser == null || currentUser.IsAdmin == true)
+                {
+                    JsonResult error = new JsonResult("User not found Or User is Admin") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
+                }
+                var secretPassword = Methods.Decrypt(currentUser.SecretPassword);
+                JsonResult success = new JsonResult(secretPassword);
+                return success;
+            }
+            catch (Exception e)
+            {
+                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return failed;
+            }
         }
 
         [HttpPost]

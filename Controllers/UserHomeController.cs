@@ -34,42 +34,48 @@ namespace Private_Note.Controllers
         }
 
         [HttpPost]
-        public IActionResult FileUpload([FromForm] IFormFile files)
+        public JsonResult FileUpload([FromForm] IFormFile file)
         {
             try
             {
-                if (files != null)
+                if (file != null)
                 {
-                    var FileExtension = Path.GetExtension(Path.GetFileName(files.FileName));
+                    var FileExtension = Path.GetExtension(Path.GetFileName(file.FileName));
                     if (AllFileType().ContainsKey(FileExtension))
                     {
-                        if (files.Length > 0)
+                        if (file.Length > 0)
                         {
                             var objfiles = new Files()
                             {
-                                FileName = Path.GetFileNameWithoutExtension(files.FileName), //Getting FileName 
-                                FileType = Path.GetExtension(Path.GetFileName(files.FileName)), //Getting Extension
+                                FileName = Path.GetFileNameWithoutExtension(file.FileName), //Getting FileName 
+                                FileType = Path.GetExtension(Path.GetFileName(file.FileName)), //Getting Extension
                                 CreatedDate = DateTime.Now, //Getting current time
                                 UserName = User.Identity.Name //get the current user name
                             };
 
                             using (var target = new MemoryStream())
                             {
-                                files.CopyTo(target);
+                                file.CopyTo(target);
                                 objfiles.File = target.ToArray(); //Getting file data
                             }
 
                             _context.Files.Add(objfiles);
                             _context.SaveChanges();
-
                         }
                     }
+                    else
+                    {
+                        JsonResult error = new JsonResult("File Type not match") {StatusCode = (int)(HttpStatusCode.NotFound) };
+                        return error;
+                    }
 
-                    return RedirectToAction("Index", "UserHome");
+                    //return RedirectToAction("Index", "UserHome");
+                    JsonResult success = new JsonResult("File Successfully Removed");
+                    return success;
                 }
                 else
                 {
-                    JsonResult error = new JsonResult("No File Uploaded");
+                    JsonResult error = new JsonResult("No File Uploaded") {StatusCode = (int)(HttpStatusCode.NotFound) };
                     return error;
                 }
 

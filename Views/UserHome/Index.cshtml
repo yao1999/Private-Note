@@ -4,12 +4,47 @@
 
 @model IEnumerable<Private_Note.Models.Files>
 <div class="container p-3">
+    <div class="col-6">
+        <h2 class="text-primary">All Files</h2>
+    </div>
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-bordered table-striped" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>
+                        File Name
+                    </th>
+                    <th>
+                        File Type
+                    </th>
+                    <th>
+                        CreatedDate
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td width="50%">@obj.FileName</td>
+                        <td width="30%">@obj.FileType</td>
+                        <td width="40%">@obj.CreatedDate</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No File exist</p>
+    }
     <div class="col-md-5">
-        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileUpload">
+        <form id="FileUpload">
             <div class="form-group">
                 <div class="col-md-10">
                     <p>Upload file</p>
-                    <input class="form-control" name="files" type="file" />
+                    <input id="file" class="form-control" name="file" type="file" />
                 </div>
             </div>
             <div class="form-group">
@@ -18,15 +53,15 @@
                 </div>
             </div>
         </form>
-        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDownload" >
+        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDownload">  @*id="FileDownload"*@
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-10">
                         <p>Download file</p>
-                        <input name="filename" type="text" placeholder="File Name" />
+                        <input id="filename" name="filename" type="text" placeholder="File Name" />
                     </div>
                     <div class="col-md-10">
-                        <input name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
+                        <input id="fileextension" name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
                     </div>
                 </div>
             </div>
@@ -68,45 +103,55 @@
             </div>
         </form>
     </div>
-    <div class="col-6">
-        <h2 class="text-primary">All Files</h2>
-    </div>
-    @if (Model.Count() > 0)
-    {
-        <table class="table table-bordered table-striped" style="width: 100%">
-            <thead>
-                <tr>
-                    <th>
-                        File Name
-                    </th>
-                    <th>
-                        File Type
-                    </th>
-                    <th>
-                        CreatedDate
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var obj in Model)
-                {
-                    <tr>
-                        <td width="50%">@obj.FileName</td>
-                        <td width="30%">@obj.FileType</td>
-                        <td width="40%">@obj.CreatedDate</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p>No File exist</p>
-    }
+
 </div> 
 
 @section Scripts{
     <script>
+        $("#FileUpload").submit(function (e) {
+            e.preventDefault();
+            var fdata = new FormData();
+            var fileInput = $('#file')[0];
+            var file = fileInput.files[0];
+            fdata.append("file", file);
+            $.ajax({
+                type: "POST",
+                url: "/UserHome/FileUpload",
+                data: fdata,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    toastr.success(data);
+                },
+                error: function (data) {
+                    toastr.error(data);
+                    console.log(data);
+                }
+            });
+        });
+        //$("#FileDownload").submit(function (e) {
+        //    e.preventDefault();
+        //    const filename = $("#filename").val();
+        //    const fileextension = $("#fileextension").val();
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/UserHome/FileDownload",
+        //        data: {
+        //            "filename": filename,
+        //            "fileextension": fileextension
+        //        },
+        //        success: function (data) {
+        //            //console.log(data);
+        //            toastr.success(data);
+        //            $("#filename").val("");
+        //            $("#fileextension").val("");
+        //        },
+        //        error: function (data) {
+        //            toastr.error(data);
+        //            //console.log(data);
+        //        }
+        //    });
+        //});
         $("#FileDelete").submit(function (e) {
             e.preventDefault();
             const filename = $("#filename").val();
@@ -120,17 +165,17 @@
                 },
                 success: function (data) {
                     //console.log(data);
-                    toastr.success("File Successfully Removed");
+                    toastr.success(data);
                     $("#filename").val("");
                     $("#fileextension").val("");
                 },
                 error: function (data) {
-                    toastr.error("File Unsuccessfully Removed");
+                    toastr.error(data);
                     //console.log(data);
                 }
             });
         });
-        $("#ChangeSecretPasswordForm").submit(function (e){
+        $("#ChangeSecretPasswordForm").submit(function (e) {
             e.preventDefault();
             const secretPassword = $("#secretPassword").val();
             $.ajax({
@@ -139,11 +184,11 @@
                 data: { "secretPassword": secretPassword },
                 success: function (data) {
                     //console.log(data);
-                    toastr.success("Secret Password Successfully Changed");
+                    toastr.success(data);
                     $("#secretPassword").val("");
                 },
                 error: function (data) {
-                    toastr.error("Secret Password Unsuccessfully Changed");
+                    toastr.error(data);
                     //console.log(data);
                 }
             });
