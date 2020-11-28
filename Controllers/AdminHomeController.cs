@@ -27,8 +27,8 @@ namespace Private_Note.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
-            if(currentUser.IsAdmin==false)
+            var currentAdmin = await _userManager.FindByNameAsync(User.Identity.Name);
+            if(currentAdmin.IsAdmin==false)
             {
                 return RedirectToAction("Index", "UserHome");
             }
@@ -69,12 +69,14 @@ namespace Private_Note.Controllers
             try
             {
                 var currentUser = await _userManager.FindByNameAsync(userName);
+                var currentAdmin = await _userManager.FindByNameAsync(User.Identity.Name);
                 if (currentUser == null || currentUser.IsAdmin == true)
                 {
                     JsonResult error = new JsonResult("User not found Or User is Admin") { StatusCode = (int)(HttpStatusCode.NotFound) };
                     return error;
                 }
                 await _userManager.DeleteAsync(currentUser);
+                UserDeletedEmail(currentUser, currentAdmin, "Account Deleted By Admin");
                 JsonResult success = new JsonResult("User Successfully Removed");
                 return success;
             }
@@ -90,14 +92,19 @@ namespace Private_Note.Controllers
         {
             try
             {
+                var currentAdmin = await _userManager.FindByNameAsync(User.Identity.Name);
                 var currentUser = await _userManager.FindByNameAsync(userName);
                 if (currentUser == null)
                 {
                     JsonResult error = new JsonResult("User not found") { StatusCode = (int)(HttpStatusCode.NotFound) };
                     return error;
                 }
+                var oldSecretPassword = Methods.Decrypt(currentUser.SecretPassword);
+                var newSecretPassword = secretPassword;
                 currentUser.SecretPassword = Methods.Encrypt(secretPassword);
                 await _userManager.UpdateAsync(currentUser);
+
+                SecretPasswordChangedEmail(currentUser, currentAdmin, "Secret Password Changed", oldSecretPassword, newSecretPassword);
 
                 JsonResult success = new JsonResult("User's Secret Password Successfully Changed");
                 return success;
@@ -151,6 +158,50 @@ namespace Private_Note.Controllers
             }
 
             return false;
+        }
+
+        private void SecretPasswordChangedEmail(
+            ApplicationUser user,
+            ApplicationUser currentAdmin,
+            string subject,
+            string oldSecretPassword,
+            string newSecretPassword)
+        {
+            IEnumerable<ApplicationUser> adminTeam = _userManager.Users.Where(u => u.IsAdmin == true);
+            var admins = new List<string>();
+
+            foreach (var admin in adminTeam)
+            {
+                admins.Add(admin.Email);
+            }
+            string allAdmins = string.Join(", ", admins);
+            string content = "Hi " + user.UserName + ", admin " + currentAdmin.UserName + " changed your Secret Password at " + DateTime.Now + ", " +
+                "your old password was " + oldSecretPassword + ", now the new one is " + newSecretPassword + "." +
+                "If you have any question, please contact one of our admins: " + allAdmins + ".";
+
+            SendEmailToUser(user, subject, content);
+        }
+
+        private void UserDeletedEmail(ApplicationUser user, ApplicationUser currentAdmin, string subject)
+        {
+            IEnumerable<ApplicationUser> adminTeam = _userManager.Users.Where(u => u.IsAdmin == true);
+            var admins = new List<string>();
+
+            foreach (var admin in adminTeam)
+            {
+                admins.Add(admin.Email);
+            }
+            string allAdmins = string.Join(", ", admins);
+            string content = "Hi " + user.UserName + ", admin " + currentAdmin.UserName + " delete your account at " + DateTime.Now + ", " +
+                "If you have any question, please contact one of our admins: " + allAdmins + ".";
+
+            SendEmailToUser(user, subject, content);
+        }
+        private void SendEmailToUser(ApplicationUser user, string subject, string content)
+        {
+            var UserEmails = new string[] { user.Email };
+            var message = new Message(UserEmails, subject, content);
+            _emailSender.SendEmail(message);
         }
     }
 }

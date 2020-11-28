@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using EmailService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -21,11 +22,16 @@ namespace Private_Note.Controllers
     {
         private readonly PrivateNoteDBContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public UserHomeController(PrivateNoteDBContext context, UserManager<ApplicationUser> userManager)
+        public UserHomeController(
+            PrivateNoteDBContext context, 
+            UserManager<ApplicationUser> userManager,
+            IEmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
         public IActionResult Index()
         {
@@ -176,8 +182,12 @@ namespace Private_Note.Controllers
                     JsonResult error = new JsonResult("User not found") { StatusCode = (int)(HttpStatusCode.NotFound) };
                     return error;
                 }
+                var oldSecretPassword = Methods.Decrypt(currentUser.SecretPassword);
+                var newSecretPassword = secretPassword;
                 currentUser.SecretPassword = Methods.Encrypt(secretPassword);
                 await _userManager.UpdateAsync(currentUser);
+
+                SendEmailToUser(currentUser, "Secret Password Changed", oldSecretPassword, newSecretPassword);
 
                 JsonResult success = new JsonResult("Secret Password Successfully Changed");
                 return success;
@@ -188,6 +198,24 @@ namespace Private_Note.Controllers
                 return failed;
             }
             
+        }
+
+        private void SendEmailToUser(ApplicationUser user, string subject, string oldSecretPassword, string newSecretPassword)
+        {
+            var UserEmails = new string[] { user.Email };
+            IEnumerable<ApplicationUser> adminTeam = _userManager.Users.Where(u => u.IsAdmin == true);
+            var admins = new List<string>();
+
+            foreach (var admin in adminTeam)
+            {
+                admins.Add(admin.Email);
+            }
+            string allAdmins = string.Join(", ", admins);
+            string content = "Hi " + user.UserName + ", Someone changed your Secret Password at " + DateTime.Now + ", " +
+                "your old password was "+ oldSecretPassword + ", now the new one is " + newSecretPassword +"."+
+                "If you have any question, please contact one of our admins: " + allAdmins + ".";
+            var message = new Message(UserEmails, subject, content);
+            _emailSender.SendEmail(message);
         }
     }
 }

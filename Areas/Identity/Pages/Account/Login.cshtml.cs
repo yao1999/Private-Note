@@ -134,7 +134,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
-        public void SendEmailToUser(ApplicationUser user, string subject)
+        private void SendEmailToUser(ApplicationUser user, string subject)
         {
             var UserEmails = new string[] { user.Email };
             IEnumerable<ApplicationUser> adminTeam = _userManager.Users.Where(u => u.IsAdmin == true);
