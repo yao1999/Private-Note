@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Private_Note.Areas.Identity.Data;
+using Private_Note.Models;
 
 namespace Private_Note.Data
 {
@@ -15,6 +16,8 @@ namespace Private_Note.Data
             : base(options)
         {
         }
+
+        public DbSet<Files> Files { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

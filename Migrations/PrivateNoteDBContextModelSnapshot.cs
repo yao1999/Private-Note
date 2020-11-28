@@ -170,15 +170,11 @@ namespace Private_Note.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("EnterWrong")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsUser")
                         .HasColumnType("bit");
@@ -189,10 +185,6 @@ namespace Private_Note.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -202,7 +194,7 @@ namespace Private_Note.Migrations
                         .HasMaxLength(256);
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(30)")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(30);
 
                     b.Property<string>("PasswordHash")
@@ -215,7 +207,7 @@ namespace Private_Note.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecretPassword")
-                        .HasColumnType("nvarchar(16)")
+                        .HasColumnType("nvarchar(100)")
                         .HasMaxLength(16);
 
                     b.Property<string>("SecurityStamp")
@@ -239,6 +231,33 @@ namespace Private_Note.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Private_Note.Models.Files", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("File")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -9,17 +9,27 @@
     <Compile Remove="Migrations\20201114020713_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20201114020914_allGood.cs" />
     <Compile Remove="Migrations\20201114020914_allGood.Designer.cs" />
+    <Compile Remove="Migrations\20201116204458_adminAdded.cs" />
+    <Compile Remove="Migrations\20201116204458_adminAdded.Designer.cs" />
+    <Compile Remove="Migrations\20201116204916_adminstuff.cs" />
+    <Compile Remove="Migrations\20201116204916_adminstuff.Designer.cs" />
+    <Compile Remove="Migrations\20201116205120_adminstuff.cs" />
+    <Compile Remove="Migrations\20201116205120_adminstuff.Designer.cs" />
+    <Compile Remove="Migrations\20201116205657_adminandfilestuff.cs" />
+    <Compile Remove="Migrations\20201116205657_adminandfilestuff.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9">
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
   </ItemGroup>
 
 </Project>
