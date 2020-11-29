@@ -59,6 +59,15 @@ namespace Private_Note.Controllers
                                 UserName = User.Identity.Name //get the current user name
                             };
 
+                            var currentFile = _context.Files.SingleOrDefault(r => 
+                                                           r.FileName == objfiles.FileName && 
+                                                           r.FileType == objfiles.FileType);
+                            if(currentFile != null)
+                            {
+                                JsonResult error = new JsonResult("Found File in Database with same Name and same Type") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                                return error;
+                            }
+
                             using (var target = new MemoryStream())
                             {
                                 file.CopyTo(target);

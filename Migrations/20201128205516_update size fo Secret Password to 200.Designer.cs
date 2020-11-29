@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Private_Note.Data;
 
 namespace Private_Note.Migrations
 {
     [DbContext(typeof(PrivateNoteDBContext))]
-    partial class PrivateNoteDBContextModelSnapshot : ModelSnapshot
+    [Migration("20201128205516_update size fo Secret Password to 200")]
+    partial class updatesizefoSecretPasswordto200
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

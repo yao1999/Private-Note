@@ -17,7 +17,7 @@ namespace Private_Note.Areas.Identity.Data
         [MaxLength(30)]
         public string Password { get; set; }
         [PersonalData]
-        [Column(TypeName = "nvarchar(100)")]
+        [Column(TypeName = "nvarchar(200)")]
         [Display(Name = "Secret Password")]
         [MaxLength(16)]
         public string SecretPassword { get; set; }

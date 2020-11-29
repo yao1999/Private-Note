@@ -24,11 +24,13 @@ namespace Private_Note.Areas.Identity
                 {
                     options.SignIn.RequireConfirmedEmail = false;
                     options.SignIn.RequireConfirmedAccount = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
+                    //------------------------------------------- need to delete
+                    //options.Password.RequireLowercase = false;
+                    //options.Password.RequireUppercase = false;
+                    //options.Password.RequireNonAlphanumeric = false;
+                    //-------------------------------------------
                     options.Lockout.AllowedForNewUsers = true;
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(1);
                     options.Lockout.MaxFailedAccessAttempts = 5;
                 })
                     .AddEntityFrameworkStores<PrivateNoteDBContext>();
