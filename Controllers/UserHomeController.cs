@@ -40,7 +40,7 @@ namespace Private_Note.Controllers
         }
 
         [HttpPost]
-        public JsonResult FileUpload([FromForm] IFormFile file)
+        public IActionResult FileUpload([FromForm] IFormFile file)
         {
             try
             {
@@ -84,9 +84,9 @@ namespace Private_Note.Controllers
                         return error;
                     }
 
-                    //return RedirectToAction("Index", "UserHome");
-                    JsonResult success = new JsonResult("File Successfully Removed");
-                    return success;
+                    return RedirectToAction("Index", "UserHome");
+                    //JsonResult success = new JsonResult("File Successfully Removed");
+                    //return success;
                 }
                 else
                 {
@@ -123,14 +123,12 @@ namespace Private_Note.Controllers
                 }
                 else
                 {
-                    JsonResult error = new JsonResult("File Not Found"){ StatusCode = (int)(HttpStatusCode.NotFound) };
-                    return error;
+                    return RedirectToAction("Index", "UserHome");
                 }
             }
             catch (Exception e)
             {
-                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
-                return failed;
+                return RedirectToAction("Index", "UserHome");
             }
         }
 
@@ -188,6 +186,8 @@ namespace Private_Note.Controllers
                 var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
                 if (currentUser == null)
                 {
+                    //JsonResult error = new JsonResult("User not found") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    //return error;
                     JsonResult error = new JsonResult("User not found") { StatusCode = (int)(HttpStatusCode.NotFound) };
                     return error;
                 }
@@ -199,7 +199,7 @@ namespace Private_Note.Controllers
                 SendEmailToUser(currentUser, "Secret Password Changed", oldSecretPassword, newSecretPassword);
 
                 JsonResult success = new JsonResult("Secret Password Successfully Changed");
-                return success;
+                return success;                
             }
             catch(Exception e)
             {

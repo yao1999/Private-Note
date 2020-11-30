@@ -78,7 +78,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm Secret Password")]
-            [Compare("SecretPassword", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("SecretPassword", ErrorMessage = "The Secret password and confirmation Secret password do not match.")]
             public string ConfirmSecretPassword { get; set; }
         }
 
@@ -113,7 +113,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    SendEmailToUser(user, "Account LockedOut");
+                    SendEmailToUser(user, "Thank for using my application");
                     return RedirectToAction("Index", "UserHome");
                 }
                 foreach (var error in result.Errors)

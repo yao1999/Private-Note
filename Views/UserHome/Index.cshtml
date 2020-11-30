@@ -76,8 +76,8 @@
                 <div class="col-md-10">
                     <div class="form-group">
                         <p>Delete file</p>
-                        <input id="filename" name="filename" type="text" placeholder="File Name" />
-                        <input id="fileextension" name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
+                        <input id="FileName" name="FileName" type="text" placeholder="File Name" />
+                        <input id="FileExtension" name="FileExtension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
                     </div>
                 </div>
             </div>
@@ -121,75 +121,49 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    toastr.success(data);
+                    console.log(successResponse);
+                    toastr.success(successResponse);
                 },
                 error: function (data) {
-                    toastr.error(data);
-                    console.log(data);
+                    toastr.error("File Upload Unsuccessful");
                 }
             });
         });
-        //$("#FileDownload").submit(function (e) {
-        //    e.preventDefault();
-        //    const filename = $("#filename").val();
-        //    const fileextension = $("#fileextension").val();
-        //    $.ajax({
-        //        type: "POST",
-        //        url: "/UserHome/FileDownload",
-        //        data: {
-        //            "filename": filename,
-        //            "fileextension": fileextension
-        //        },
-        //        success: function (data) {
-        //            //console.log(data);
-        //            toastr.success(data);
-        //            $("#filename").val("");
-        //            $("#fileextension").val("");
-        //        },
-        //        error: function (data) {
-        //            toastr.error(data);
-        //            //console.log(data);
-        //        }
-        //    });
-        //});
         $("#FileDelete").submit(function (e) {
             e.preventDefault();
-            const filename = $("#filename").val();
-            const fileextension = $("#fileextension").val();
+            var FileName = $("#FileName").val();
+            var FileExtension = $("#FileExtension").val();
             $.ajax({
                 type: "POST",
                 url: "/UserHome/FileDelete",
                 data: {
-                    "filename": filename,
-                    "fileextension": fileextension
+                    "FileName": FileName,
+                    "FileExtension": FileExtension,
                 },
-                success: function (data) {
-                    //console.log(data);
-                    toastr.success(data);
+                success: function (successResponse) {
+                    console.log(successResponse);
+                    toastr.success(successResponse);
                     $("#filename").val("");
                     $("#fileextension").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (errorResponse) {
+                    toastr.error("File Delete Unsuccessful");
                 }
             });
         });
         $("#ChangeSecretPasswordForm").submit(function (e) {
             e.preventDefault();
-            const secretPassword = $("#secretPassword").val();
+            var secretPassword = $("#secretPassword").val();
             $.ajax({
                 type: "POST",
                 url: "/UserHome/ChangeSecretPassword",
                 data: { "secretPassword": secretPassword },
-                success: function (data) {
-                    //console.log(data);
-                    toastr.success(data);
+                success: function (successResponse) {
+                    toastr.success(successResponse);
                     $("#secretPassword").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (errorResponse) {
+                    toastr.error("Secret Password Change Unsuccessful");
                 }
             });
         });
