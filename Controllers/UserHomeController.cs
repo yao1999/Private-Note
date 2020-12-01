@@ -102,7 +102,38 @@ namespace Private_Note.Controllers
             }
         }
 
-        public IActionResult FileDownload([FromForm] string FileName, [FromForm] string FileExtension)
+        public JsonResult FileDownloadCheck([FromForm] string FileName, [FromForm] string FileExtension)
+        {
+            try
+            {
+                if (FileExtension.Contains('.') == false)
+                {
+                    FileExtension = FileExtension.Insert(0, ".");
+                }
+                var currentFile = _context.Files.SingleOrDefault(r =>
+                                                r.FileName == FileName &&
+                                                r.FileType == FileExtension &&
+                                                r.UserName == User.Identity.Name);
+                if (currentFile != null)
+                {
+                    JsonResult success = new JsonResult("File in DataBase");
+                    return success;
+                }
+                else
+                {
+                    JsonResult error = new JsonResult("No such File") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
+                }
+            }
+            catch (Exception e)
+            {
+                JsonResult error = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return error;
+            }
+        }
+
+        [HttpGet]
+        public IActionResult FileDownload(string FileName, string FileExtension)
         {
             try
             {
@@ -123,12 +154,14 @@ namespace Private_Note.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Index", "UserHome");
+                    JsonResult error = new JsonResult("No such File") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
                 }
             }
             catch (Exception e)
             {
-                return RedirectToAction("Index", "UserHome");
+                JsonResult error = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return error;
             }
         }
 

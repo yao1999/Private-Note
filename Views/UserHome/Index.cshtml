@@ -1,13 +1,22 @@
-﻿@{
+﻿@model IEnumerable<Private_Note.Models.Files>
+@{
     ViewData["Title"] = "Index";
+    var WordFiles = Model.Where(f => f.FileType == ".txt" ||
+                                      f.FileType == ".pdf" ||
+                                      f.FileType == ".docx" ||
+                                      f.FileType == ".doc");
+    var ImageFiles = Model.Where(f => f.FileType == ".png" ||
+                                      f.FileType == ".jpg" ||
+                                      f.FileType == ".jpeg" ||
+                                      f.FileType == ".pptx");
 }
 
-@model IEnumerable<Private_Note.Models.Files>
+
 <div class="container p-3">
     <div class="col-6">
-        <h2 class="text-primary">All Files</h2>
+        <h2 class="text-primary">All Word Files</h2>
     </div>
-    @if (Model.Count() > 0)
+    @if (WordFiles.Count() > 0)
     {
         <table class="table table-bordered table-striped" style="width: 100%">
             <thead>
@@ -24,7 +33,43 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var obj in Model)
+                @foreach (var obj in WordFiles)
+                {
+                    <tr>
+                        <td width="50%">@obj.FileName</td>
+                        <td width="30%">@obj.FileType</td>
+                        <td width="40%">@obj.CreatedDate</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No File exist</p>
+    }
+
+    <div class="col-6">
+        <h2 class="text-primary">All Image Files</h2>
+    </div>
+    @if (ImageFiles.Count() > 0)
+    {
+        <table class="table table-bordered table-striped" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>
+                        File Name
+                    </th>
+                    <th>
+                        File Type
+                    </th>
+                    <th>
+                        CreatedDate
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in ImageFiles)
                 {
                     <tr>
                         <td width="50%">@obj.FileName</td>
@@ -53,15 +98,15 @@
                 </div>
             </div>
         </form>
-        <form method="post" enctype="multipart/form-data" asp-controller="UserHome" asp-action="FileDownload">  @*id="FileDownload"*@
+        <form id="FileDownload">
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-10">
                         <p>Download file</p>
-                        <input id="filename" name="filename" type="text" placeholder="File Name" />
+                        <input id="FileName" name="FileName" type="text" placeholder="File Name" />
                     </div>
                     <div class="col-md-10">
-                        <input id="fileextension" name="fileextension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
+                        <input id="FileExtension" name="FileExtension" type="text" placeholder="File Type(ie. txt, pptx, pdf ...)" />
                     </div>
                 </div>
             </div>
@@ -104,7 +149,7 @@
         </form>
     </div>
 
-</div> 
+</div>
 
 @section Scripts{
     <script>
@@ -129,6 +174,31 @@
                 }
             });
         });
+        $("#FileDownload").submit(function (e) {
+            e.preventDefault();
+            var FileName = $("#FileName").val();
+            var FileExtension = $("#FileExtension").val();
+            $.ajax({
+                type: "POST",
+                url: "/UserHome/FileDownloadCheck",
+                data: {
+                    "FileName": FileName,
+                    "FileExtension": FileExtension,
+                },
+                success: function (successResponse) {
+                    //console.log(successResponse);
+                    toastr.success("File Download Successful");
+                    $("#FileName").val("");
+                    $("#FileExtension").val("");
+                    window.location.href = "/UserHome/FileDownload?FileName=" + FileName
+                        + "&FileExtension=" + FileExtension;
+                },
+                error: function (jqXHR) {
+                    console.log(jqXHR.responseText);
+                    toastr.error(jqXHR.responseText);
+                }
+            });
+        });
         $("#FileDelete").submit(function (e) {
             e.preventDefault();
             var FileName = $("#FileName").val();
@@ -143,8 +213,8 @@
                 success: function (successResponse) {
                     console.log(successResponse);
                     toastr.success(successResponse);
-                    $("#filename").val("");
-                    $("#fileextension").val("");
+                    $("#FileName").val("");
+                    $("#FileExtension").val("");
                 },
                 error: function (errorResponse) {
                     toastr.error("File Delete Unsuccessful");
@@ -168,4 +238,4 @@
             });
         });
     </script>
- }
+}
