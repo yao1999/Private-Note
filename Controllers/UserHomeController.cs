@@ -166,17 +166,17 @@ namespace Private_Note.Controllers
         }
 
         [HttpPost]
-        public JsonResult FileDelete([FromForm] string FileName, [FromForm] string FileExtension)
+        public JsonResult FileDelete([FromForm] string fileName, [FromForm] string fileExtension)
         {
             try
             {
-                if (FileExtension.Contains('.') == false)
+                if (fileExtension.Contains('.') == false)
                 {
-                    FileExtension = FileExtension.Insert(0, ".");
+                    fileExtension = fileExtension.Insert(0, ".");
                 }
                 var currentFile = _context.Files.SingleOrDefault(r =>
-                                                r.FileName == FileName &&
-                                                r.FileType == FileExtension &&
+                                                r.FileName == fileName &&
+                                                r.FileType == fileExtension &&
                                                 r.UserName == User.Identity.Name);
                 if(currentFile == null)
                 {
