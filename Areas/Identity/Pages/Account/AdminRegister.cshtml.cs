@@ -95,6 +95,15 @@ namespace Private_Note.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            var checkUser = await _userManager.FindByNameAsync(Input.UserName);
+
+            if (checkUser != null)
+            {
+                ModelState.AddModelError(string.Empty, "User name exist");
+                return Page();
+            }
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser {
@@ -122,7 +131,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-            return RedirectToAction("Index", "AdminHome");
+            return Page();
         }
 
         private void SendEmailToUser(ApplicationUser user, string subject)

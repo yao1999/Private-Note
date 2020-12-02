@@ -14,7 +14,7 @@
 
 <div class="container p-3">
     <div class="col-6">
-        <h2 class="text-primary">All Word Files</h2>
+        <h2 class="text-primary">All Text Files</h2>
     </div>
     @if (WordFiles.Count() > 0)
     {
@@ -166,11 +166,11 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    console.log(successResponse);
+                    //console.log(successResponse);
                     toastr.success(successResponse);
                 },
-                error: function (data) {
-                    toastr.error("File Upload Unsuccessful");
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });
@@ -194,7 +194,7 @@
                         + "&FileExtension=" + FileExtension;
                 },
                 error: function (jqXHR) {
-                    console.log(jqXHR.responseText);
+                    //console.log(jqXHR.responseText);
                     toastr.error(jqXHR.responseText);
                 }
             });
@@ -203,6 +203,8 @@
             e.preventDefault();
             var FileName = $("#FileName").val();
             var FileExtension = $("#FileExtension").val();
+            console.log("FileName" + FileName);
+            console.log("FileExtension" + FileExtension);
             $.ajax({
                 type: "POST",
                 url: "/UserHome/FileDelete",
@@ -216,8 +218,8 @@
                     $("#FileName").val("");
                     $("#FileExtension").val("");
                 },
-                error: function (errorResponse) {
-                    toastr.error("File Delete Unsuccessful");
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });
@@ -232,8 +234,8 @@
                     toastr.success(successResponse);
                     $("#secretPassword").val("");
                 },
-                error: function (errorResponse) {
-                    toastr.error("Secret Password Change Unsuccessful");
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });

@@ -22,14 +22,14 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="Input.Password"></label>
+                <label asp-for="Input.Password">PassWord (Uppercase, Lowercase, NonAlphanumeric needed)</label>
                 <input asp-for="Input.Password" class="form-control" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
+                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
@@ -38,14 +38,14 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="Input.SecretPassword"></label>
+                <label asp-for="Input.SecretPassword">Secret PassWord (Uppercase, Lowercase, NonAlphanumeric needed)</label>
                 <input asp-for="Input.SecretPassword" class="form-control" />
                 <span asp-validation-for="Input.SecretPassword" class="text-danger"></span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="Input.ConfirmSecretPassword"></label>
+                <label asp-for="Input.ConfirmSecretPassword">Confirm Secret Password</label>
                 <input asp-for="Input.ConfirmSecretPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmSecretPassword" class="text-danger"></span>
             </div>

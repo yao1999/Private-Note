@@ -149,9 +149,8 @@
                     toastr.success("User secret password is:" + data);
                     $("#userName").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });
@@ -169,9 +168,8 @@
                     toastr.success(data);
                     $("#userName").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });
@@ -192,9 +190,8 @@
                     $("#secretPassword").val("");
                     $("#userName").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });
@@ -221,9 +218,8 @@
                     $("#subject").val("");
                     $("#content").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });

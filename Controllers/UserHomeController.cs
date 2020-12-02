@@ -76,6 +76,8 @@ namespace Private_Note.Controllers
 
                             _context.Files.Add(objfiles);
                             _context.SaveChanges();
+                            JsonResult success = new JsonResult("File Successfully Uploaded");
+                            return success;
                         }
                     }
                     else
@@ -85,7 +87,7 @@ namespace Private_Note.Controllers
                     }
 
                     return RedirectToAction("Index", "UserHome");
-                    //JsonResult success = new JsonResult("File Successfully Removed");
+                    //JsonResult success = new JsonResult("File Successfully Uploaded");
                     //return success;
                 }
                 else
@@ -154,14 +156,12 @@ namespace Private_Note.Controllers
                 }
                 else
                 {
-                    JsonResult error = new JsonResult("No such File") { StatusCode = (int)(HttpStatusCode.NotFound) };
-                    return error;
+                    return RedirectToAction("Index", "UserHome");
                 }
             }
             catch (Exception e)
             {
-                JsonResult error = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
-                return error;
+                return RedirectToAction("Index", "UserHome");
             }
         }
 
