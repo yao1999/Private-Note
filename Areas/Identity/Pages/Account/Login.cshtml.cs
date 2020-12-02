@@ -101,11 +101,21 @@ namespace Private_Note.Areas.Identity.Pages.Account
             {
                 var user = await _userManager.FindByNameAsync(Input.UserName);
                 Input.SecretPassword = Methods.Encrypt(Input.SecretPassword);
+
+                if (user.SecretPassword.CompareTo(Input.SecretPassword) != 0 ||
+                   user.Email.CompareTo(Input.Email) != 0)
+                {
+                    ModelState.AddModelError(string.Empty, "Incorrect information.");
+                    await _userManager.AccessFailedAsync(user);
+                    return Page();
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(
                     user, 
                     Input.Password, 
                     isPersistent: false, 
                     lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

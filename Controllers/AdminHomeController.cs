@@ -64,11 +64,11 @@ namespace Private_Note.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> DeleteUser([FromForm] string userName)
+        public async Task<JsonResult> DeleteUser([FromForm] string UserName)
         {
             try
             {
-                var currentUser = await _userManager.FindByNameAsync(userName);
+                var currentUser = await _userManager.FindByNameAsync(UserName);
                 var currentAdmin = await _userManager.FindByNameAsync(User.Identity.Name);
                 if (currentUser == null || currentUser.IsAdmin == true)
                 {
@@ -88,20 +88,20 @@ namespace Private_Note.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> ChangeSecretPassword([FromForm] string userName, [FromForm] string secretPassword)
+        public async Task<JsonResult> ChangeSecretPassword([FromForm] string Username, [FromForm] string SecretPassword)
         {
             try
             {
                 var currentAdmin = await _userManager.FindByNameAsync(User.Identity.Name);
-                var currentUser = await _userManager.FindByNameAsync(userName);
+                var currentUser = await _userManager.FindByNameAsync(Username);
                 if (currentUser == null)
                 {
                     JsonResult error = new JsonResult("User not found") { StatusCode = (int)(HttpStatusCode.NotFound) };
                     return error;
                 }
                 var oldSecretPassword = Methods.Decrypt(currentUser.SecretPassword);
-                var newSecretPassword = secretPassword;
-                currentUser.SecretPassword = Methods.Encrypt(secretPassword);
+                var newSecretPassword = SecretPassword;
+                currentUser.SecretPassword = Methods.Encrypt(SecretPassword);
                 await _userManager.UpdateAsync(currentUser);
 
                 SecretPasswordChangedEmail(currentUser, currentAdmin, "Secret Password Changed", oldSecretPassword, newSecretPassword);
@@ -118,14 +118,14 @@ namespace Private_Note.Controllers
 
         [HttpPost]
         public async Task<JsonResult> ContactUser(
-            [FromForm] string userName, 
+            [FromForm] string username, 
             [FromForm] string subject, 
             [FromForm] string content,
             [FromForm] string userType)
         {
             try
             {
-                var user = await _userManager.FindByNameAsync(userName);
+                var user = await _userManager.FindByNameAsync(username);
                 if (TypeCheck(user, userType) == false)
                 {
                     JsonResult error = new JsonResult("User Type Not Match") { StatusCode = (int)(HttpStatusCode.NotFound) };

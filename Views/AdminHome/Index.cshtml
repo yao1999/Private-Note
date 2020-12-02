@@ -22,8 +22,8 @@
                         Password
                     </th>
                     @*<th>
-                        Secret Password
-                    </th>*@
+                            Secret Password
+                        </th>*@
                     <th>
                         Email Address
                     </th>
@@ -51,6 +51,11 @@
         <p>No User exist</p>
     }
     <br /><br />
+    <div class="col-6 text-right">
+        <a href='/Identity/Account/AdminRegister' class="btn btn-primary">
+            Add Admin
+        </a>
+    </div>
     @*<div class="col-6 text-right">
             <a asp-controller="AdminHome" asp-action="DeleteUser" class="btn btn-primary">
                 Delete User
@@ -76,7 +81,7 @@
             <div class="form-group">
                 <div class="col-md-10">
                     <p>Delete User</p>
-                    <input id="userName" name="userName" type="text" placeholder="User Name" />
+                    <input id="UserName" name="UserName" type="text" placeholder="User Name" />
                 </div>
             </div>
         </div>
@@ -91,10 +96,10 @@
             <div class="form-group">
                 <div class="col-md-10">
                     <p>Change Secret Password</p>
-                    <input id="userName" name="userName" type="text" placeholder="User Name" />
+                    <input id="Username" name="Username" type="text" placeholder="User Name" />
                 </div>
                 <div class="col-md-10">
-                    <input id="secretPassword" name="secretPassword" type="text" placeholder="Secret Password" />
+                    <input id="SecretPassword" name="SecretPassword" type="text" placeholder="Secret Password" />
                 </div>
             </div>
         </div>
@@ -110,7 +115,9 @@
                 <div class="col-md-10">
                     <p>Contact User</p>
                     <input id="userType" name="userType" type="text" placeholder="U(User) A(Admin)" />
-                    <input id="userName" name="userName" type="text" placeholder="User Name" />
+                </div>
+                <div class="col-md-10">
+                    <input id="username" name="username" type="text" placeholder="User Name" />
                 </div>
                 <div class="col-md-10">
                     <input id="subject" name="subject" type="text" placeholder="subject" />
@@ -126,11 +133,6 @@
             </div>
         </div>
     </form>
-    <div class="col-6 text-right">
-        <a href='/Identity/Account/AdminRegister' class="btn btn-primary">
-            Add Admin
-        </a>
-    </div>
 </div>
 
 @section Scripts{
@@ -149,59 +151,59 @@
                     toastr.success("User secret password is:" + data);
                     $("#userName").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });
         $("#DeleteUser").submit(function (e) {
             e.preventDefault();
-            const userName = $("#userName").val();
+            var UserName = $("#UserName").val();
+            console.log("userName: " + UserName);
             $.ajax({
                 type: "POST",
                 url: "/AdminHome/DeleteUser",
                 data: {
-                    "userName": userName
+                    "UserName": UserName
                 },
                 success: function (data) {
                     //console.log(data);
                     toastr.success(data);
                     $("#userName").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });
         $("#ChangeSecretPasswordForm").submit(function (e){
             e.preventDefault();
-            const userName = $("#userName").val();
-            const secretPassword = $("#secretPassword").val();
+            var Username = $("#Username").val();
+            var SecretPassword = $("#SecretPassword").val();
+            console.log("Username: " + $("#Username").val());
+            console.log("SecretPassword: " + $("#SecretPassword").val());
             $.ajax({
                 type: "POST",
                 url: "/AdminHome/ChangeSecretPassword",
                 data: {
-                    "userName": userName,
-                    "secretPassword": secretPassword
+                    "Username": Username,
+                    "SecretPassword": SecretPassword
                 },
                 success: function (data) {
                     //console.log(data);
                     toastr.success(data);
-                    $("#secretPassword").val("");
-                    $("#userName").val("");
+                    $("#SecretPassword").val("");
+                    $("#Username").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });
         $("#ContactUser").submit(function (e) {
             e.preventDefault();
             const userType = $("#userType").val();
-            const userName = $("#userName").val();
+            const username = $("#username").val();
             const subject = $("#subject").val();
             const content = $("#content").val();
             $.ajax({
@@ -209,7 +211,7 @@
                 url: "/AdminHome/ContactUser",
                 data: {
                     "userType": userType,
-                    "userName": userName,
+                    "username": username,
                     "subject": subject,
                     "content": content
                 },
@@ -217,13 +219,12 @@
                     //console.log(data);
                     toastr.success(data);
                     $("#userType").val("");
-                    $("#userName").val("");
+                    $("#username").val("");
                     $("#subject").val("");
                     $("#content").val("");
                 },
-                error: function (data) {
-                    toastr.error(data);
-                    //console.log(data);
+                error: function (jqXHR) {
+                    toastr.error(jqXHR.responseText);
                 }
             });
         });

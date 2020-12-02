@@ -77,7 +77,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm Secret Password")]
-            [Compare("SecretPassword", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("SecretPassword", ErrorMessage = "The Secret password and confirmation Secret password do not match.")]
             public string ConfirmSecretPassword { get; set; }
         }
 
@@ -95,6 +95,15 @@ namespace Private_Note.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            var checkUser = await _userManager.FindByNameAsync(Input.UserName);
+
+            if (checkUser != null)
+            {
+                ModelState.AddModelError(string.Empty, "User name exist");
+                return Page();
+            }
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser {
@@ -112,7 +121,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
                     _logger.LogInformation("Admin created a new account with password.");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    SendEmailToUser(user, "Welcome to Private Note");
+                    SendEmailToUser(user, "Welcome to Private Note Admin Team");
                     return RedirectToAction("Index", "AdminHome");
                 }
                 foreach (var error in result.Errors)
@@ -122,7 +131,7 @@ namespace Private_Note.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-            return RedirectToAction("Index", "AdminHome");
+            return Page();
         }
 
         private void SendEmailToUser(ApplicationUser user, string subject)

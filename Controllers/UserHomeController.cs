@@ -40,7 +40,7 @@ namespace Private_Note.Controllers
         }
 
         [HttpPost]
-        public JsonResult FileUpload([FromForm] IFormFile file)
+        public IActionResult FileUpload([FromForm] IFormFile file)
         {
             try
             {
@@ -59,6 +59,15 @@ namespace Private_Note.Controllers
                                 UserName = User.Identity.Name //get the current user name
                             };
 
+                            var currentFile = _context.Files.SingleOrDefault(r => 
+                                                           r.FileName == objfiles.FileName && 
+                                                           r.FileType == objfiles.FileType);
+                            if(currentFile != null)
+                            {
+                                JsonResult error = new JsonResult("Found File in Database with same Name and same Type") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                                return error;
+                            }
+
                             using (var target = new MemoryStream())
                             {
                                 file.CopyTo(target);
@@ -67,6 +76,8 @@ namespace Private_Note.Controllers
 
                             _context.Files.Add(objfiles);
                             _context.SaveChanges();
+                            JsonResult success = new JsonResult("File Successfully Uploaded");
+                            return success;
                         }
                     }
                     else
@@ -75,9 +86,9 @@ namespace Private_Note.Controllers
                         return error;
                     }
 
-                    //return RedirectToAction("Index", "UserHome");
-                    JsonResult success = new JsonResult("File Successfully Removed");
-                    return success;
+                    return RedirectToAction("Index", "UserHome");
+                    //JsonResult success = new JsonResult("File Successfully Uploaded");
+                    //return success;
                 }
                 else
                 {
@@ -93,7 +104,38 @@ namespace Private_Note.Controllers
             }
         }
 
-        public IActionResult FileDownload([FromForm] string FileName, [FromForm] string FileExtension)
+        public JsonResult FileDownloadCheck([FromForm] string FileName, [FromForm] string FileExtension)
+        {
+            try
+            {
+                if (FileExtension.Contains('.') == false)
+                {
+                    FileExtension = FileExtension.Insert(0, ".");
+                }
+                var currentFile = _context.Files.SingleOrDefault(r =>
+                                                r.FileName == FileName &&
+                                                r.FileType == FileExtension &&
+                                                r.UserName == User.Identity.Name);
+                if (currentFile != null)
+                {
+                    JsonResult success = new JsonResult("File in DataBase");
+                    return success;
+                }
+                else
+                {
+                    JsonResult error = new JsonResult("No such File") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    return error;
+                }
+            }
+            catch (Exception e)
+            {
+                JsonResult error = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
+                return error;
+            }
+        }
+
+        [HttpGet]
+        public IActionResult FileDownload(string FileName, string FileExtension)
         {
             try
             {
@@ -114,29 +156,27 @@ namespace Private_Note.Controllers
                 }
                 else
                 {
-                    JsonResult error = new JsonResult("File Not Found"){ StatusCode = (int)(HttpStatusCode.NotFound) };
-                    return error;
+                    return RedirectToAction("Index", "UserHome");
                 }
             }
             catch (Exception e)
             {
-                JsonResult failed = new JsonResult(e.Message) { StatusCode = (int)(HttpStatusCode.NotFound) };
-                return failed;
+                return RedirectToAction("Index", "UserHome");
             }
         }
 
         [HttpPost]
-        public JsonResult FileDelete([FromForm] string FileName, [FromForm] string FileExtension)
+        public JsonResult FileDelete([FromForm] string fileName, [FromForm] string fileExtension)
         {
             try
             {
-                if (FileExtension.Contains('.') == false)
+                if (fileExtension.Contains('.') == false)
                 {
-                    FileExtension = FileExtension.Insert(0, ".");
+                    fileExtension = fileExtension.Insert(0, ".");
                 }
                 var currentFile = _context.Files.SingleOrDefault(r =>
-                                                r.FileName == FileName &&
-                                                r.FileType == FileExtension &&
+                                                r.FileName == fileName &&
+                                                r.FileType == fileExtension &&
                                                 r.UserName == User.Identity.Name);
                 if(currentFile == null)
                 {
@@ -179,6 +219,8 @@ namespace Private_Note.Controllers
                 var currentUser = await _userManager.FindByNameAsync(User.Identity.Name);
                 if (currentUser == null)
                 {
+                    //JsonResult error = new JsonResult("User not found") { StatusCode = (int)(HttpStatusCode.NotFound) };
+                    //return error;
                     JsonResult error = new JsonResult("User not found") { StatusCode = (int)(HttpStatusCode.NotFound) };
                     return error;
                 }
@@ -190,7 +232,7 @@ namespace Private_Note.Controllers
                 SendEmailToUser(currentUser, "Secret Password Changed", oldSecretPassword, newSecretPassword);
 
                 JsonResult success = new JsonResult("Secret Password Successfully Changed");
-                return success;
+                return success;                
             }
             catch(Exception e)
             {
